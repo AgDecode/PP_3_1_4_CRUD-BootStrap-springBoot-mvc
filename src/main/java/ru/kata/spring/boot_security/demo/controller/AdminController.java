@@ -51,6 +51,7 @@ public class AdminController {
                           @PathVariable("id") int id,
                           @RequestParam(value = "rolesList") String [] roles,
                           @ModelAttribute("pass") String pass) {
+
         if (bindingResult.hasErrors()){
             return "admin";
         }
