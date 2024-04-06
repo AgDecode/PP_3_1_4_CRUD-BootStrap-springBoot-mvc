@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
@@ -31,18 +33,27 @@ public class AdminController {
     }
 
     @PostMapping()
-    public String addUser (@ModelAttribute("user") User user,
+    public String addUser (@ModelAttribute("user") @Valid User user,
+                           BindingResult bindingResult,
                            @RequestParam(value = "rolesList") String [] roles,
                            @ModelAttribute("pass") String pass) {
 
+        if (bindingResult.hasErrors()){
+            return "admin";
+        }
         userService.save(user, roles, pass);
         return "redirect:/admin";
     }
 
     @PatchMapping("/{id}")
-    public String update (@ModelAttribute("user") User user, @PathVariable("id") int id,
+    public String update (@ModelAttribute("user") @Valid User user,
+                          BindingResult bindingResult,
+                          @PathVariable("id") int id,
                           @RequestParam(value = "rolesList") String [] roles,
                           @ModelAttribute("pass") String pass) {
+        if (bindingResult.hasErrors()){
+            return "admin";
+        }
         userService.update(user, id, roles, pass);
         return "redirect:/admin";
     }
